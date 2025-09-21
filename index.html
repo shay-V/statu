@@ -3,52 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spotify播放状态模拟</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>Spotify Status as Image</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
+        /* 将样式内联，确保在SVG中正常工作 */
+        .roboto-font {
             font-family: 'Roboto', sans-serif;
-            background: linear-gradient(135deg, #2d2d2d, #121212);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
         }
         
         .container {
-            width: 100%;
-            max-width: 500px;
-            margin: 0 auto;
+            width: 480px;
+            height: 135px;
         }
         
         .main {
             background-color: white;
             display: flex;
-            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.6);
-            width: 100%;
-            padding: 15px 0px 20px 0px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.48);
+            width: 99%;
+            padding: 3px 0px 7px 0px;
             border-radius: 60px 13px 60px 60px;
             position: relative;
-        }
-        
-        .playing {
-            font-weight: bold;
-            color: #53b14f;
-            text-align: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .not-play {
-            color: #ff1616;
         }
         
         .art {
@@ -94,12 +68,12 @@
             float: left !important;
         }
         
-        .rotate{
+        .rotate {
             animation: rotate 10s linear infinite;
         }
         
-        @keyframes rotate{
-            to{ transform: rotate(360deg); }
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
         }
         
         .album-cover {
@@ -108,14 +82,10 @@
             width: 100px;
             box-shadow: 0px 0px 5px rgba(92, 91, 92, 1);
             border: 2px solid white;
-            object-fit: cover;
         }
         
         .spectrograph {
-            color: #1DB954; /* Spotify green */
-        }
-        
-        .spectrograph {
+            color: #1DB954;
             bottom: 19px;
             display: flex;
             position: absolute;
@@ -123,7 +93,6 @@
             width: 98%;
             height: 20px;
             overflow: hidden;
-            mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Cdefs%3E%3Cpattern id='spectrograph' x='0' y='0' width='6px' height='4px' patternUnits='userSpaceOnUse'%3E%3Crect x='0' y='2px' width='6px' height='2px' fill='%23000'/%3E%3C/pattern%3E%3C/defs%3E%3Crect x='0' y='0' width='100%25' height='100%25' fill='url(%23spectrograph)'%3E%3C/rect%3E%3C/svg%3E");
         }
         
         .spectrograph__bar {
@@ -134,43 +103,11 @@
             transform: translateY(100%);
             transform-origin: center bottom;
             animation: animation 1.5s steps(5, start) infinite alternate;
-            will-change: transform;
-        }
-        
-        .spectrograph__bar:last-child {
-            margin: 0;
-        }
-        
-        @keyframes animation1 {
-            0%, 5% {
-                transform: translateY(100%);
-            }
-            100% {
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes animation2 {
-            0%, 66% {
-                transform: translateY(100%);
-            }
-            33%, 100% {
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes animation3 {
-            33%, 66% {
-                transform: translateY(100%);
-            }
-            0%, 45%, 100% {
-                transform: translateY(0);
-            }
         }
         
         .ribbon {
             position: absolute !important;
-            right: -5px; 
+            right: -5px;
             top: -5px;
             z-index: 1;
             overflow: hidden;
@@ -186,20 +123,19 @@
             text-align: center;
             line-height: 20px;
             transform: rotate(45deg);
-            -webkit-transform: rotate(45deg);
             width: 100px;
             display: block;
             background: #1DB954;
             box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 1);
             position: absolute;
-            top: 19px; 
+            top: 19px;
             right: -21px;
         }
         
         .ribbon span::before {
             content: "";
-            position: absolute; 
-            left: 0px; 
+            position: absolute;
+            left: 0px;
             top: 100%;
             z-index: -1;
             border-left: 3px solid #1DB954;
@@ -210,8 +146,8 @@
         
         .ribbon span::after {
             content: "";
-            position: absolute; 
-            right: 0px; 
+            position: absolute;
+            right: 0px;
             top: 100%;
             z-index: -1;
             border-left: 3px solid transparent;
@@ -261,10 +197,6 @@
             animation: marquee 10s linear infinite;
         }
         
-        .title-animation span {
-            animation-delay: 0s;
-        }
-        
         @keyframes marquee {
             0% {
                 transform: translate(0, 0);
@@ -274,170 +206,157 @@
             }
         }
         
-        .controls {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-            gap: 15px;
+        /* 声波动画 */
+        .spectrograph__bar:nth-child(1) {animation: animation1 1800ms infinite alternate;}
+        .spectrograph__bar:nth-child(2) {animation: animation2 1900ms infinite alternate;}
+        .spectrograph__bar:nth-child(3) {animation: animation3 2000ms infinite alternate;}
+        .spectrograph__bar:nth-child(4) {animation: animation1 2100ms infinite alternate;}
+        .spectrograph__bar:nth-child(5) {animation: animation2 2200ms infinite alternate;}
+        .spectrograph__bar:nth-child(6) {animation: animation3 2300ms infinite alternate;}
+        .spectrograph__bar:nth-child(7) {animation: animation1 2400ms infinite alternate;}
+        .spectrograph__bar:nth-child(8) {animation: animation2 2500ms infinite alternate;}
+        .spectrograph__bar:nth-child(9) {animation: animation3 2600ms infinite alternate;}
+        .spectrograph__bar:nth-child(10) {animation: animation1 2700ms infinite alternate;}
+        .spectrograph__bar:nth-child(11) {animation: animation2 2800ms infinite alternate;}
+        .spectrograph__bar:nth-child(12) {animation: animation3 2900ms infinite alternate;}
+        .spectrograph__bar:nth-child(13) {animation: animation1 3000ms infinite alternate;}
+        .spectrograph__bar:nth-child(14) {animation: animation2 3100ms infinite alternate;}
+        .spectrograph__bar:nth-child(15) {animation: animation3 3200ms infinite alternate;}
+        .spectrograph__bar:nth-child(16) {animation: animation1 3300ms infinite alternate;}
+        .spectrograph__bar:nth-child(17) {animation: animation2 3400ms infinite alternate;}
+        .spectrograph__bar:nth-child(18) {animation: animation3 3500ms infinite alternate;}
+        .spectrograph__bar:nth-child(19) {animation: animation1 3600ms infinite alternate;}
+        .spectrograph__bar:nth-child(20) {animation: animation2 3700ms infinite alternate;}
+        .spectrograph__bar:nth-child(21) {animation: animation3 3800ms infinite alternate;}
+        .spectrograph__bar:nth-child(22) {animation: animation1 3900ms infinite alternate;}
+        .spectrograph__bar:nth-child(23) {animation: animation2 4000ms infinite alternate;}
+        .spectrograph__bar:nth-child(24) {animation: animation3 4100ms infinite alternate;}
+        .spectrograph__bar:nth-child(25) {animation: animation1 4200ms infinite alternate;}
+        .spectrograph__bar:nth-child(26) {animation: animation2 4300ms infinite alternate;}
+        .spectrograph__bar:nth-child(27) {animation: animation3 4400ms infinite alternate;}
+        .spectrograph__bar:nth-child(28) {animation: animation1 4500ms infinite alternate;}
+        .spectrograph__bar:nth-child(29) {animation: animation2 4600ms infinite alternate;}
+        .spectrograph__bar:nth-child(30) {animation: animation3 4700ms infinite alternate;}
+        .spectrograph__bar:nth-child(31) {animation: animation1 4800ms infinite alternate;}
+        .spectrograph__bar:nth-child(32) {animation: animation2 4900ms infinite alternate;}
+        .spectrograph__bar:nth-child(33) {animation: animation3 5000ms infinite alternate;}
+        .spectrograph__bar:nth-child(34) {animation: animation1 5100ms infinite alternate;}
+        .spectrograph__bar:nth-child(35) {animation: animation2 5200ms infinite alternate;}
+        .spectrograph__bar:nth-child(36) {animation: animation3 5300ms infinite alternate;}
+        .spectrograph__bar:nth-child(37) {animation: animation1 5400ms infinite alternate;}
+        .spectrograph__bar:nth-child(38) {animation: animation2 5500ms infinite alternate;}
+        .spectrograph__bar:nth-child(39) {animation: animation3 5600ms infinite alternate;}
+        .spectrograph__bar:nth-child(40) {animation: animation1 5700ms infinite alternate;}
+        .spectrograph__bar:nth-child(41) {animation: animation2 5800ms infinite alternate;}
+        
+        @keyframes animation1 {
+            0%, 5% {transform: translateY(100%);}
+            100% {transform: translateY(0);}
         }
         
-        .btn {
-            background: #1DB954;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        @keyframes animation2 {
+            0%, 66% {transform: translateY(100%);}
+            33%, 100% {transform: translateY(0);}
         }
         
-        .btn:hover {
-            background: #1ed760;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        @keyframes animation3 {
+            33%, 66% {transform: translateY(100%);}
+            0%, 45%, 100% {transform: translateY(0);}
         }
-        
-        .btn:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-        
-        .btn-pause {
-            background: #f7981c;
-        }
-        
-        .btn-pause:hover {
-            background: #ffa942;
-        }
-        
-        /* 动态生成的声波动画样式 */
-        .spectrograph__bar:nth-child(1) {-webkit-animation-name: animation1;animation-name: animation1;-webkit-animation-duration: 1800ms;animation-duration: 1800ms;}
-        .spectrograph__bar:nth-child(2) {-webkit-animation-name: animation2;animation-name: animation2;-webkit-animation-duration: 1900ms;animation-duration: 1900ms;}
-        .spectrograph__bar:nth-child(3) {-webkit-animation-name: animation3;animation-name: animation3;-webkit-animation-duration: 2000ms;animation-duration: 2000ms;}
-        .spectrograph__bar:nth-child(4) {-webkit-animation-name: animation1;animation-name: animation1;-webkit-animation-duration: 2100ms;animation-duration: 2100ms;}
-        .spectrograph__bar:nth-child(5) {-webkit-animation-name: animation2;animation-name: animation2;-webkit-animation-duration: 2200ms;animation-duration: 2200ms;}
-        .spectrograph__bar:nth-child(6) {-webkit-animation-name: animation3;animation-name: animation3;-webkit-animation-duration: 2300ms;animation-duration: 2300ms;}
-        .spectrograph__bar:nth-child(7) {-webkit-animation-name: animation1;animation-name: animation1;-webkit-animation-duration: 2400ms;animation-duration: 2400ms;}
-        .spectrograph__bar:nth-child(8) {-webkit-animation-name: animation2;animation-name: animation2;-webkit-animation-duration: 2500ms;animation-duration: 2500ms;}
-        .spectrograph__bar:nth-child(9) {-webkit-animation-name: animation3;animation-name: animation3;-webkit-animation-duration: 2600ms;animation-duration: 2600ms;}
-        .spectrograph__bar:nth-child(10) {-webkit-animation-name: animation1;animation-name: animation1;-webkit-animation-duration: 2700ms;animation-duration: 2700ms;}
-        .spectrograph__bar:nth-child(11) {-webkit-animation-name: animation2;animation-name: animation2;-webkit-animation-duration: 2800ms;animation-duration: 2800ms;}
-        .spectrograph__bar:nth-child(12) {-webkit-animation-name: animation3;animation-name: animation3;-webkit-animation-duration: 2900ms;animation-duration: 2900ms;}
-        .spectrograph__bar:nth-child(13) {-webkit-animation-name: animation1;animation-name: animation1;-webkit-animation-duration: 3000ms;animation-duration: 3000ms;}
-        .spectrograph__bar:nth-child(14) {-webkit-animation-name: animation2;animation-name: animation2;-webkit-animation-duration: 3100ms;animation-duration: 3100ms;}
-        .spectrograph__bar:nth-child(15) {-webkit-animation-name: animation3;animation-name: animation3;-webkit-animation-duration: 3200ms;animation-duration: 3200ms;}
-        .spectrograph__bar:nth-child(16) {-webkit-animation-name: animation1;animation-name: animation1;-webkit-animation-duration: 3300ms;animation-duration: 3300ms;}
-        .spectrograph__bar:nth-child(17) {-webkit-animation-name: animation2;animation-name: animation2;-webkit-animation-duration: 3400ms;animation-duration: 3400ms;}
-        .spectrograph__bar:nth-child(18) {-webkit-animation-name: animation3;animation-name: animation3;-webkit-animation-duration: 3500ms;animation-duration: 3500ms;}
-        .spectrograph__bar:nth-child(19) {-webkit-animation-name: animation1;animation-name: animation1;-webkit-animation-duration: 3600ms;animation-duration: 3600ms;}
-        .spectrograph__bar:nth-child(20) {-webkit-animation-name: animation2;animation-name: animation2;-webkit-animation-duration: 3700ms;animation-duration: 3700ms;}
-        .spectrograph__bar:nth-child(21) {-webkit-animation-name: animation3;animation-name: animation3;-webkit-animation-duration: 3800ms;animation-duration: 3800ms;}
-        .spectrograph__bar:nth-child(22) {-webkit-animation-name: animation1;animation-name: animation1;-webkit-animation-duration: 3900ms;animation-duration: 3900ms;}
-        .spectrograph__bar:nth-child(23) {-webkit-animation-name: animation2;animation-name: animation2;-webkit-animation-duration: 4000ms;animation-duration: 4000ms;}
-        .spectrograph__bar:nth-child(24) {-webkit-animation-name: animation3;animation-name: animation3;-webkit-animation-duration: 4100ms;animation-duration: 4100ms;}
-        .spectrograph__bar:nth-child(25) {-webkit-animation-name: animation1;animation-name: animation1;-webkit-animation-duration: 4200ms;animation-duration: 4200ms;}
-        .spectrograph__bar:nth-child(26) {-webkit-animation-name: animation2;animation-name: animation2;-webkit-animation-duration: 4300ms;animation-duration: 4300ms;}
-        .spectrograph__bar:nth-child(27) {-webkit-animation-name: animation3;animation-name: animation3;-webkit-animation-duration: 4400ms;animation-duration: 4400ms;}
-        .spectrograph__bar:nth-child(28) {-webkit-animation-name: animation1;animation-name: animation1;-webkit-animation-duration: 4500ms;animation-duration: 4500ms;}
-        .spectrograph__bar:nth-child(29) {-webkit-animation-name: animation2;animation-name: animation2;-webkit-animation-duration: 4600ms;animation-duration: 4600ms;}
-        .spectrograph__bar:nth-child(30) {-webkit-animation-name: animation3;animation-name: animation3;-webkit-animation-duration: 4700ms;animation-duration: 4700ms;}
-        .spectrograph__bar:nth-child(31) {-webkit-animation-name: animation1;animation-name: animation1;-webkit-animation-duration: 4800ms;animation-duration: 4800ms;}
-        .spectrograph__bar:nth-child(32) {-webkit-animation-name: animation2;animation-name: animation2;-webkit-animation-duration: 4900ms;animation-duration: 4900ms;}
-        .spectrograph__bar:nth-child(33) {-webkit-animation-name: animation3;animation-name: animation3;-webkit-animation-duration: 5000ms;animation-duration: 5000ms;}
-        .spectrograph__bar:nth-child(34) {-webkit-animation-name: animation1;animation-name: animation1;-webkit-animation-duration: 5100ms;animation-duration: 5100ms;}
-        .spectrograph__bar:nth-child(35) {-webkit-animation-name: animation2;animation-name: animation2;-webkit-animation-duration: 5200ms;animation-duration: 5200ms;}
-        .spectrograph__bar:nth-child(36) {-webkit-animation-name: animation3;animation-name: animation3;-webkit-animation-duration: 5300ms;animation-duration: 5300ms;}
-        .spectrograph__bar:nth-child(37) {-webkit-animation-name: animation1;animation-name: animation1;-webkit-animation-duration: 5400ms;animation-duration: 5400ms;}
-        .spectrograph__bar:nth-child(38) {-webkit-animation-name: animation2;animation-name: animation2;-webkit-animation-duration: 5500ms;animation-duration: 5500ms;}
-        .spectrograph__bar:nth-child(39) {-webkit-animation-name: animation3;animation-name: animation3;-webkit-animation-duration: 5600ms;animation-duration: 5600ms;}
-        .spectrograph__bar:nth-child(40) {-webkit-animation-name: animation1;animation-name: animation1;-webkit-animation-duration: 5700ms;animation-duration: 5700ms;}
-        .spectrograph__bar:nth-child(41) {-webkit-animation-name: animation2;animation-name: animation2;-webkit-animation-duration: 5800ms;animation-duration: 5800ms;}
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="main">
-            <div class="ribbon">
-                <span>
-                    <img src="https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_CMYK_White.png" class="spotify-logo"/>
-                </span>
-            </div>
-            <a class="art" href="#" target="_BLANK">
-                <center>
-                    <img src="https://i.scdn.co/image/ab67616d0000b2732d5b5c7d5b9d6e0e8c5e0d5e" class="album-cover rotate" />
-                    <div class="centered">⦿</div>
-                </center>
-            </a>
-            <div class="text">
-                <div class="song-info">
-                    <div class="song-title-long">
-                        <p class="title title-animation">
-                            <span>Blinding Lights</span>
-                        </p>
-                    </div>
-                    <div class="artist">The Weeknd
-                        <span class="explicit-music">EXPLICIT</span>
-                    </div>
-                </div>
-                <div class="spectrograph">
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                    <div class='spectrograph__bar'></div>
-                </div>
-            </div>
-        </div>
+    <!-- SVG版本，可以直接在img标签中使用 -->
+    <svg xmlns="http://www.w3.org/2000/svg" width="480" height="135" viewBox="0 0 480 135">
+        <!-- 背景 -->
+        <rect width="100%" height="100%" fill="#f0f0f0"/>
         
-        <div class="controls">
-            <button class="btn" id="playBtn">播放随机歌曲</button>
-            <button class="btn btn-pause" id="pauseBtn">暂停/播放</button>
-        </div>
-    </div>
+        <!-- 主容器 -->
+        <foreignObject x="10" y="10" width="460" height="115">
+            <div xmlns="http://www.w3.org/1999/xhtml" class="container">
+                <div class="main">
+                    <div class="ribbon">
+                        <span>
+                            <img src="https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_CMYK_White.png" class="spotify-logo"/>
+                        </span>
+                    </div>
+                    <a class="art" href="#" target="_BLANK">
+                        <center>
+                            <img src="https://i.scdn.co/image/ab67616d0000b2732d5b5c7d5b9d6e0e8c5e0d5e" class="album-cover rotate" />
+                            <div class="centered">⦿</div>
+                        </center>
+                    </a>
+                    <div class="text">
+                        <div class="song-info">
+                            <div class="song-title-long">
+                                <p class="title title-animation">
+                                    <span>Blinding Lights</span>
+                                </p>
+                            </div>
+                            <div class="artist">The Weeknd
+                                <span class="explicit-music">EXPLICIT</span>
+                            </div>
+                        </div>
+                        <div class="spectrograph">
+                            <!-- 41个声波条 -->
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                            <div class='spectrograph__bar'></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </foreignObject>
+    </svg>
 
     <script>
+        // 添加字体加载
+        const link = document.createElement('link');
+        link.href = 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap';
+        link.rel = 'stylesheet';
+        document.head.appendChild(link);
+        
+        // 添加交互功能
         document.addEventListener('DOMContentLoaded', function() {
             const albumCover = document.querySelector('.album-cover');
-            const playBtn = document.getElementById('playBtn');
-            const pauseBtn = document.getElementById('pauseBtn');
             const spectrographBars = document.querySelectorAll('.spectrograph__bar');
             const songTitle = document.querySelector('.song-title-long span');
             const artistName = document.querySelector('.artist');
@@ -462,64 +381,29 @@
                     artist: "Ed Sheeran", 
                     explicit: false, 
                     cover: "https://i.scdn.co/image/ab67616d0000b2732d5b5c7d5b9d6e0e8c5e0d5e" 
-                },
-                { 
-                    title: "Don't Start Now", 
-                    artist: "Dua Lipa", 
-                    explicit: false, 
-                    cover: "https://i.scdn.co/image/ab67616d0000b2732d5b5c7d5b9d6e0e8c5e0d5e" 
-                },
-                { 
-                    title: "Levitating", 
-                    artist: "Dua Lipa ft. DaBaby", 
-                    explicit: true, 
-                    cover: "https://i.scdn.co/image/ab67616d0000b2732d5b5c7d5b9d6e0e8c5e0d5e" 
                 }
             ];
             
-            let isPlaying = true;
-            
-            // 暂停/播放功能
-            pauseBtn.addEventListener('click', function() {
-                isPlaying = !isPlaying;
+            // 自动切换歌曲
+            let currentIndex = 0;
+            function changeSong() {
+                const song = songs[currentIndex];
+                songTitle.textContent = song.title;
+                artistName.innerHTML = song.artist;
                 
-                if (isPlaying) {
-                    albumCover.classList.add('rotate');
-                    spectrographBars.forEach(bar => {
-                        bar.style.animationPlayState = 'running';
-                    });
-                } else {
-                    albumCover.classList.remove('rotate');
-                    spectrographBars.forEach(bar => {
-                        bar.style.animationPlayState = 'paused';
-                    });
-                }
-            });
-            
-            // 随机播放歌曲
-            playBtn.addEventListener('click', function() {
-                const randomSong = songs[Math.floor(Math.random() * songs.length)];
-                
-                songTitle.textContent = randomSong.title;
-                artistName.innerHTML = randomSong.artist;
-                
-                if (randomSong.explicit) {
+                if (song.explicit) {
                     explicitTag.style.display = 'inline-block';
-                    artistName.innerHTML += ' <span class="explicit-music">EXPLICIT</span>';
                 } else {
                     explicitTag.style.display = 'none';
                 }
                 
-                albumCover.src = randomSong.cover;
+                albumCover.src = song.cover;
                 
-                if (!isPlaying) {
-                    isPlaying = true;
-                    albumCover.classList.add('rotate');
-                    spectrographBars.forEach(bar => {
-                        bar.style.animationPlayState = 'running';
-                    });
-                }
-            });
+                currentIndex = (currentIndex + 1) % songs.length;
+            }
+            
+            // 每10秒切换一次歌曲
+            setInterval(changeSong, 10000);
         });
     </script>
 </body>
